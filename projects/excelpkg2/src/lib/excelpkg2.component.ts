@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Excelpkg2Service } from './excelpkg2.service';
 import "../../assets/src/index.js"
+import { sheet1Data } from './sheet1Data';
 // import "../../assets/xspreadsheet.css";
 // import "../../assets/src/index.less"
 
@@ -16,9 +17,6 @@ import "../../assets/src/index.js"
 })
 
 export class Excelpkg2Component implements OnInit {
-
-  @Input() url: string = "";
-  @Input() getPath: string = "";
 
   s: any;
   isSaving: boolean = false;
@@ -77,77 +75,66 @@ export class Excelpkg2Component implements OnInit {
   constructor(private sheetService: Excelpkg2Service) { }
 
   ngOnInit(): void {
-    console.log(this.url)
-    console.log(this.getPath)
-    this.sheetService.getSheetData(this.url, this.getPath).subscribe((data: any) => {
-      if (data && data.sheetData) {
-        this.sheetData = data.sheetData
-        this.sheetConfig.name = data.sheetData.name
-        this.sheetConfig.validations = data.sheetData.validation
-        this.sheetConfig.rows["0"]["cells"] = data.sheetData.cellsObj
-        data.sheetData.data.map((d: any, idx: number) => {
-          let cloneObj: any = {}
-          this.sheetConfig.rows[idx + 1] = {}
-          let id: any = ""
-          Object.entries(d).map((o, i) => {
-            if (o[0] === "_id") {
-              id = o[1]
-            }
-            if (o[0] !== "_id") {
-              const testvar = { ...this.myvar1 }
-              testvar.text = o[1]
-              testvar.dbKey = o[0]
-              testvar.id = id
-              testvar.editable = true
-              cloneObj[i - 1] = testvar
-            }
-          })
-          Object.defineProperty(this.sheetConfig.rows[idx + 1], "cells", {
-            value: cloneObj
-          })
-        })
-        console.log(this.sheetConfig)
-
-        this.s = window.x_spreadsheet("#x-spreadsheet-demo", {
-          view: {
-            height: () => document.documentElement.clientHeight,
-            width: () => document.documentElement.clientWidth,
-          },
-          row: {
-            len: 25,
-          },
-          col: {
-            len: data.sheetData.colLen,
-          },
-        }).loadData(this.sheetConfig)
-          .change((data: any) => {
-            //console.log(data)
-          })
-        this.s.on("cell-edited", (cell: any, ri: any, ci: any) => {
-          console.log(cell, ri, ci)
-        })
-        this.s.on("cell-edited-finished", (cell: any, ri: number, ci: number) => {
-          if (this.s.datas[0].rows._[ri]["cells"][ci]["id"] !== undefined &&
-            this.s.datas[0].rows._[ri]["cells"][ci]["dbKey"] !== undefined &&
-            this.s.datas[0].rows._[ri]["cells"][ci]["text"] !== undefined
-          ) {
-            if (this.s.validate()) {
-              const obj: any = {}
-              obj[this.s.datas[0].rows._[ri]["cells"][ci]["dbKey"]] = this.s.datas[0].rows._[ri]["cells"][ci]["text"]
-              obj["id"] = this.s.datas[0].rows._[ri]["cells"][ci]["id"]
-              this.isSaving = true
-              this.sheetService.postSheetObj(this.url, obj.id, obj).subscribe(data => {
-                if (data) {
-                  this.isSaving = false
-                }
-              })
-            }
+    if (sheet1Data) {
+      this.sheetData = sheet1Data;
+      this.sheetConfig.name = sheet1Data.name
+      this.sheetConfig.validations = sheet1Data.validation
+      this.sheetConfig.rows["0"]["cells"] = sheet1Data.cellsObj
+      sheet1Data.data.map((d: any, idx: number) => {
+        let cloneObj: any = {}
+        this.sheetConfig.rows[idx + 1] = {}
+        let id: any = ""
+        Object.entries(d).map((o, i) => {
+          if (o[0] === "_id") {
+            id = o[1]
+          }
+          if (o[0] !== "_id") {
+            const testvar = { ...this.myvar1 }
+            testvar.text = o[1]
+            testvar.dbKey = o[0]
+            testvar.id = id
+            testvar.editable = true
+            cloneObj[i - 1] = testvar
           }
         })
-      }
-      //console.log(this.sheetData)
-    })
-    console.log(this.sheetConfig)
+        Object.defineProperty(this.sheetConfig.rows[idx + 1], "cells", {
+          value: cloneObj
+        })
+      })
+      console.log(this.sheetConfig)
+
+      this.s = window.x_spreadsheet("#x-spreadsheet-demo", {
+        view: {
+          height: () => document.documentElement.clientHeight,
+          width: () => document.documentElement.clientWidth,
+        },
+        row: {
+          len: 25,
+        },
+        col: {
+          len: sheet1Data.colLen,
+        },
+      }).loadData(this.sheetConfig)
+        .change((data: any) => {
+          //console.log(data)
+        })
+      this.s.on("cell-edited", (cell: any, ri: any, ci: any) => {
+        console.log(cell, ri, ci)
+      })
+      this.s.on("cell-edited-finished", (cell: any, ri: number, ci: number) => {
+        if (this.s.datas[0].rows._[ri]["cells"][ci]["id"] !== undefined &&
+          this.s.datas[0].rows._[ri]["cells"][ci]["dbKey"] !== undefined &&
+          this.s.datas[0].rows._[ri]["cells"][ci]["text"] !== undefined
+        ) {
+          if (this.s.validate()) {
+            const obj: any = {}
+            obj[this.s.datas[0].rows._[ri]["cells"][ci]["dbKey"]] = this.s.datas[0].rows._[ri]["cells"][ci]["text"]
+            obj["id"] = this.s.datas[0].rows._[ri]["cells"][ci]["id"]
+            this.isSaving = true
+          }
+        }
+      })
+    }
   }
 
   getDbKeyObj(sheetObj: any) {
