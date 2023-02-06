@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -27,9 +30,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "projects/excelpkg2/assets/xspreadsheet.css",
+              "projects/excelpkg2/assets/src/index.less"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
@@ -97,6 +103,37 @@
               "src/styles.css"
             ],
             "scripts": []
+          }
+        }
+      }
+    },
+    "excelpkg": {
+      "projectType": "library",
+      "root": "projects/excelpkg2",
+      "sourceRoot": "projects/excelpkg2/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/excelpkg2/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/excelpkg2/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/excelpkg2/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/excelpkg2/src/test.ts",
+            "tsConfig": "projects/excelpkg2/tsconfig.spec.json",
+            "karmaConfig": "projects/excelpkg2/karma.conf.js"
           }
         }
       }

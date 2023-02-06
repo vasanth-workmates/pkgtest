@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Excelpkg2Service } from './excelpkg2.service';
 import "../../assets/src/index.js"
-import "../../assets/xspreadsheet.css";
-
+// import "../../assets/xspreadsheet.css";
+// import "../../assets/src/index.less"
 
 @Component({
   selector: 'lib-excelpkg2',
@@ -35,40 +35,40 @@ export class Excelpkg2Component implements OnInit {
   sheetConfig: any = {
     name: "",
     styles: [
-        {
-            border: {
-                bottom: ["thin", "#000"],
-                top: ["thin", "#000"],
-                left: ["thin", "#000"],
-                right: ["thin", "#000"]
-            }
+      {
+        border: {
+          bottom: ["thin", "#000"],
+          top: ["thin", "#000"],
+          left: ["thin", "#000"],
+          right: ["thin", "#000"]
+        }
+      },
+      {
+        border: {
+          bottom: ["thin", "#000"],
+          top: ["thin", "#000"],
+          left: ["thin", "#000"],
+          right: ["thin", "#000"]
         },
-        {
-            border: {
-                bottom: ["thin", "#000"],
-                top: ["thin", "#000"],
-                left: ["thin", "#000"],
-                right: ["thin", "#000"]
-            },
-            font: { bold: true }
+        font: { bold: true }
+      },
+      { font: { bold: true } },
+      {
+        border: {
+          bottom: ["thin", "#000"],
+          top: ["thin", "#000"],
+          left: ["thin", "#000"],
+          right: ["thin", "#000"]
         },
-        { font: { bold: true } },
-        {
-            border: {
-                bottom: ["thin", "#000"],
-                top: ["thin", "#000"],
-                left: ["thin", "#000"],
-                right: ["thin", "#000"]
-            },
-            font: { bold: true },
-            align: "center"
-        },
-        { font: { bold: true }, align: "center" }
+        font: { bold: true },
+        align: "center"
+      },
+      { font: { bold: true }, align: "center" }
     ],
     rows: {
-        "0": {
-            "cells": {}
-        }
+      "0": {
+        "cells": {}
+      }
     },
     validations: [],
     autofilter: {}
@@ -86,25 +86,25 @@ export class Excelpkg2Component implements OnInit {
         this.sheetConfig.validations = data.sheetData.validation
         this.sheetConfig.rows["0"]["cells"] = data.sheetData.cellsObj
         data.sheetData.data.map((d: any, idx: number) => {
-            let cloneObj: any = {}
-            this.sheetConfig.rows[idx + 1] = {}
-            let id: any = ""
-            Object.entries(d).map((o, i) => {
-              if (o[0] === "_id") {
-                id = o[1]
-              }
-              if (o[0] !== "_id") {
-                const testvar = {...this.myvar1}
-                testvar.text = o[1]
-                testvar.dbKey = o[0]
-                testvar.id = id
-                testvar.editable = true
-                cloneObj[i-1] = testvar
-              }
-            })
-            Object.defineProperty(this.sheetConfig.rows[idx + 1], "cells", {
-              value: cloneObj
-            })
+          let cloneObj: any = {}
+          this.sheetConfig.rows[idx + 1] = {}
+          let id: any = ""
+          Object.entries(d).map((o, i) => {
+            if (o[0] === "_id") {
+              id = o[1]
+            }
+            if (o[0] !== "_id") {
+              const testvar = { ...this.myvar1 }
+              testvar.text = o[1]
+              testvar.dbKey = o[0]
+              testvar.id = id
+              testvar.editable = true
+              cloneObj[i - 1] = testvar
+            }
+          })
+          Object.defineProperty(this.sheetConfig.rows[idx + 1], "cells", {
+            value: cloneObj
+          })
         })
         console.log(this.sheetConfig)
 
@@ -113,16 +113,16 @@ export class Excelpkg2Component implements OnInit {
             height: () => document.documentElement.clientHeight,
             width: () => document.documentElement.clientWidth,
           },
-        row: {
-          len: 25,
-        },
-        col: {
-          len: data.sheetData.colLen,
-        },
+          row: {
+            len: 25,
+          },
+          col: {
+            len: data.sheetData.colLen,
+          },
         }).loadData(this.sheetConfig)
-        .change((data: any) => {
+          .change((data: any) => {
             //console.log(data)
-        })
+          })
         this.s.on("cell-edited", (cell: any, ri: any, ci: any) => {
           console.log(cell, ri, ci)
         })
@@ -153,7 +153,7 @@ export class Excelpkg2Component implements OnInit {
   getDbKeyObj(sheetObj: any) {
     const returnObj: any = {}
     Object.keys(sheetObj?.cellsObj).map((key: any) => {
-        returnObj[sheetObj.cellsObj[key]["dbKey"]] = ""
+      returnObj[sheetObj.cellsObj[key]["dbKey"]] = ""
     })
     return returnObj;
   }
@@ -162,13 +162,13 @@ export class Excelpkg2Component implements OnInit {
     const keysArr: any = []
     Object.keys(objKeys).forEach(key => keysArr.push(key))
     Object.keys(cellObj).forEach((keyParent, idx) => {
-        if (idx !== 0) {
-            const cloneObj = { ...objKeys }
-            Object.keys(cellObj[keyParent]["cells"]).forEach((keyChild, i) => {
-                cloneObj[keysArr[i]] = cellObj[keyParent]["cells"][keyChild].text
-            })
-            resArr.push(cloneObj)
-        }
+      if (idx !== 0) {
+        const cloneObj = { ...objKeys }
+        Object.keys(cellObj[keyParent]["cells"]).forEach((keyChild, i) => {
+          cloneObj[keysArr[i]] = cellObj[keyParent]["cells"][keyChild].text
+        })
+        resArr.push(cloneObj)
+      }
     })
     console.log(resArr)
   }
